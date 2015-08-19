@@ -1,6 +1,4 @@
 <resources>
-    <string name="app_name">MagicNumber</string>
-
-    <string name="hello_world">Hello world!</string>
+    <string name="app_name">Magic Number</string>
     <string name="action_settings">Settings</string>
 </resources>
