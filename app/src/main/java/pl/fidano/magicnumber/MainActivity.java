@@ -2,6 +2,7 @@ package pl.fidano.magicnumber;
 
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -19,11 +20,12 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Random;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
     private static final String REMOTE_URL = "http://sluchaj.radiooswiecim.pl:8000/status-json.xsl";
-    private TextView timestamp, lucky;
+    private TextView timestamp;
     private Button roll;
 
     private SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss dd.MM.yyyy");
@@ -61,7 +63,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private void initControls() {
         timestamp = (TextView) findViewById(R.id.timestamp);
-        lucky = (TextView) findViewById(R.id.lucky);
         roll = (Button) findViewById(R.id.roll);
         roll.setOnClickListener(this);
     }
@@ -84,6 +85,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     public class StatusHandler extends AsyncTask<String, Void, Integer> {
 
+        private static final int IDLE_LISTENERS = 1; // how many static listeners, ie. icecast or so
+
         @Override
         protected Integer doInBackground(String... params) {
 
@@ -104,14 +107,24 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             } catch (Exception e) {
                 Toast.makeText(getApplicationContext(), "Error while geting data.", Toast.LENGTH_SHORT).show();
             }
-            return listeners;
+            return listeners - IDLE_LISTENERS;
         }
 
         @Override
-        protected void onPostExecute(Integer result) {
-            TextView lucky = (TextView) findViewById(R.id.lucky);
-            lucky.setText(result.toString());
+        protected void onPostExecute(final Integer result) {
+            final Random rnd = new Random();
+            final TextView lucky = (TextView) findViewById(R.id.lucky);
+            new CountDownTimer(3000, 70) {
+                @Override
+                public void onTick(long millisUntilFinished) {
+                    lucky.setText(""+rnd.nextInt(100));
+                }
+
+                @Override
+                public void onFinish() {
+                   lucky.setText(result.toString());
+                }
+            }.start();
         }
     }
-
 }
