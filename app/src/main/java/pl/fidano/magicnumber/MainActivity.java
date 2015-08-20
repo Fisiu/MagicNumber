@@ -1,5 +1,6 @@
 package pl.fidano.magicnumber;
 
+import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.CountDownTimer;
@@ -36,7 +37,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         setContentView(R.layout.activity_main);
         initControls();
         updateTimestamp();
-        new StatusHandler().execute(REMOTE_URL);
+        if (savedInstanceState == null) {
+            new StatusHandler().execute(REMOTE_URL);
+        }
     }
 
     @Override
@@ -114,15 +117,17 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         protected void onPostExecute(final Integer result) {
             final Random rnd = new Random();
             final TextView lucky = (TextView) findViewById(R.id.lucky);
-            new CountDownTimer(3000, 70) {
+            new CountDownTimer(1000, 10) {
                 @Override
                 public void onTick(long millisUntilFinished) {
-                    lucky.setText(""+rnd.nextInt(100));
+                    lucky.setTextColor(Color.BLACK);
+                    lucky.setText("" + rnd.nextInt(100));
                 }
 
                 @Override
                 public void onFinish() {
-                   lucky.setText(result.toString());
+                    lucky.setTextColor(Color.RED);
+                    lucky.setText(result.toString());
                 }
             }.start();
         }
