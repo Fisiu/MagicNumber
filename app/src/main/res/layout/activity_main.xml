@@ -27,7 +27,7 @@
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Pick new"
+        android:text="Pick new number"
         android:id="@+id/roll"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true" />
